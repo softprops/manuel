@@ -1,0 +1,6 @@
+[package]
+name = "manuel"
+version = "0.1.0"
+authors = ["softprops <d.tangren@gmail.com>"]
+[dependencies]
+hoedown = "3.0.2"
