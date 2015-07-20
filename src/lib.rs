@@ -57,23 +57,37 @@ impl Render for Roff {
   }
 
   fn table(&mut self, output: &mut Buffer, content: &Buffer) {
-    output.write(b"MISSING TABLE HANDLER\n").unwrap();
+    output.write(b".TS\nallbox;\n").unwrap();
+    output.write(content).unwrap();
+    output.write(b"\n.TE\n").unwrap();
   }
 
   fn table_header(&mut self, output: &mut Buffer, content: &Buffer) {
-    output.write(b"MISSING TABLE_HEADER HANDLER\n").unwrap();
+    if !output.is_empty() {
+      output.write(b" ").unwrap();
+    }
+    output.write(content).unwrap();
+    output.write(b" ").unwrap();
   }
 
   fn table_body(&mut self, output: &mut Buffer, content: &Buffer) {
-    output.write(b"MISSING TABLE_BODY HANDLER\n").unwrap();
+    output.write(content).unwrap();
   }
 
   fn table_row(&mut self, output: &mut Buffer, content: &Buffer) {
-    output.write(b"MISSING TABLE_ROW HANDLER\n").unwrap();
+    if !output.is_empty() {
+      output.write(b"\n").unwrap();
+    }
+    output.write(content).unwrap();
+    output.write(b"\n").unwrap();
   }
 
   fn table_cell(&mut self, output: &mut Buffer, content: &Buffer, flags: renderer::Table) {
-    output.write(b"MISSING TABLE_CELL HANDLER\n").unwrap();
+    if !output.is_empty() {
+      output.write(b"\t").unwrap();
+    }
+    output.write(content).unwrap();
+    output.write(b"\t").unwrap();
   }
 
   fn footnotes(&mut self, output: &mut Buffer, content: &Buffer) {
@@ -132,7 +146,6 @@ impl Render for Roff {
   }
 
   fn image(&mut self, ob: &mut Buffer, link: &Buffer, title: &Buffer, alt: &Buffer) -> bool {
-    println!("no img");
     false
   }
 
@@ -142,8 +155,10 @@ impl Render for Roff {
   }
 
   fn link(&mut self, output: &mut Buffer, content: &Buffer, link: &Buffer, title: &Buffer) -> bool {
-    println!("no link");
-    false
+    output.write(b"\n\\[la]").unwrap();
+    output.write(content).unwrap();
+    output.write(b"\\[ra]").unwrap();
+    true
   }
 
   fn triple_emphasis(&mut self, output: &mut Buffer, content: &Buffer) -> bool {
@@ -182,11 +197,11 @@ impl Render for Roff {
     output.write(text).unwrap();
   }
 
-  fn before_render(&mut self, ob: &mut Buffer, inline_render: bool) {
+  fn before_render(&mut self, output: &mut Buffer, inline_render: bool) {
     ()
   }
 
-  fn after_render(&mut self, ob: &mut Buffer, inline_render: bool) {
+  fn after_render(&mut self, output: &mut Buffer, inline_render: bool) {
     ()
   }
 }
